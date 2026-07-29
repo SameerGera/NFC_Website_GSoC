@@ -1,6 +1,5 @@
 import admin from "firebase-admin";
 import { getFirestore, Firestore } from "firebase-admin/firestore";
-import { getAuth, Auth } from "firebase-admin/auth";
 
 function initAdmin() {
   if (admin.getApps().length === 0) {
@@ -12,28 +11,16 @@ function initAdmin() {
       }),
     });
   }
-  return { adminDb: getFirestore(), adminAuth: getAuth() };
+  return getFirestore();
 }
 
 let _adminDb: Firestore | null = null;
-let _adminAuth: Auth | null = null;
 
 function getAdminDb() {
   if (!_adminDb) {
-    const { adminDb, adminAuth } = initAdmin();
-    _adminDb = adminDb;
-    _adminAuth = adminAuth;
+    _adminDb = initAdmin();
   }
   return _adminDb;
 }
 
-function getAdminAuth() {
-  if (!_adminAuth) {
-    const { adminDb, adminAuth } = initAdmin();
-    _adminDb = adminDb;
-    _adminAuth = adminAuth;
-  }
-  return _adminAuth;
-}
-
-export { getAdminDb, getAdminAuth };
+export { getAdminDb };
