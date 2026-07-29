@@ -58,7 +58,7 @@ export default function ProfileTabs({ onTabChange, initialTab = "overview" }: Pr
           key={tab.id}
           ref={(el) => { if (el) tabRefs.current.set(tab.id, el); }}
           onClick={() => handleTab(tab.id)}
-          className={`relative z-10 whitespace-nowrap rounded-xl py-2 px-3.5 text-[13px] font-medium transition-colors duration-200 shrink-0 ${
+          className={`relative z-10 flex-1 text-center whitespace-nowrap rounded-xl py-2 px-3.5 text-[13px] font-medium transition-colors duration-200 shrink-0 ${
             active === tab.id
               ? "text-white"
               : "text-text-secondary hover:text-text-primary"
