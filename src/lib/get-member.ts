@@ -1,5 +1,3 @@
-import "server-only";
-
 import { getAdminDb } from "@/lib/firebase-admin";
 import { Member } from "@/types/member";
 

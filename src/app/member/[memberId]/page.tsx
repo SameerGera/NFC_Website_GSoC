@@ -12,7 +12,14 @@ export default async function MemberPage({
   params: Promise<{ memberId: string }>;
 }) {
   const { memberId } = await params;
-  const member = await getMember(memberId);
+
+  let member;
+  try {
+    member = await getMember(memberId);
+  } catch (e) {
+    console.error("Failed to fetch member:", e);
+    notFound();
+  }
 
   if (!member) {
     notFound();
