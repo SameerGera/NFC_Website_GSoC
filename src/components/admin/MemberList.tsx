@@ -5,8 +5,8 @@ import { Member, MemberStatus } from "@/types/member";
 interface Props {
   members: Member[];
   onEdit: (member: Member) => void;
-  onDelete: (memberId: string) => void;
-  onToggleStatus: (memberId: string, status: MemberStatus) => void;
+  onDelete: (username: string) => void;
+  onToggleStatus: (username: string, status: MemberStatus) => void;
 }
 
 export default function MemberList({ members, onEdit, onDelete, onToggleStatus }: Props) {
@@ -24,7 +24,7 @@ export default function MemberList({ members, onEdit, onDelete, onToggleStatus }
         <thead>
           <tr className="border-b border-card-border text-text-secondary">
             <th className="px-4 py-3 font-medium">Name</th>
-            <th className="px-4 py-3 font-medium">Member ID</th>
+            <th className="px-4 py-3 font-medium">Username</th>
             <th className="px-4 py-3 font-medium">Role</th>
             <th className="px-4 py-3 font-medium">Department</th>
             <th className="px-4 py-3 font-medium">Status</th>
@@ -33,12 +33,12 @@ export default function MemberList({ members, onEdit, onDelete, onToggleStatus }
         </thead>
         <tbody>
           {members.map((member) => (
-            <tr key={member.memberId} className="border-b border-card-border/50 transition hover:bg-primary-bg/30">
+            <tr key={member.username} className="border-b border-card-border/50 transition hover:bg-primary-bg/30">
               <td className="px-4 py-3">
                 <div className="flex items-center gap-3">
                   <div className="h-8 w-8 overflow-hidden rounded-full bg-primary-bg">
-                    {member.profileImage ? (
-                      <img src={member.profileImage} alt="" className="h-full w-full object-cover" />
+                    {member["profile Image"] ? (
+                      <img src={member["profile Image"]} alt="" className="h-full w-full object-cover" />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center text-xs text-primary font-medium">
                         {member.name.charAt(0)}
@@ -48,11 +48,11 @@ export default function MemberList({ members, onEdit, onDelete, onToggleStatus }
                   <span className="font-medium text-text-primary">{member.name}</span>
                 </div>
               </td>
-              <td className="px-4 py-3 text-text-secondary">{member.memberId}</td>
-              <td className="px-4 py-3 text-text-secondary">{member.role}</td>
+              <td className="px-4 py-3 text-text-secondary">{member.username}</td>
+              <td className="px-4 py-3 text-text-secondary">{member.clubrole}</td>
               <td className="px-4 py-3 text-text-secondary">{member.department}</td>
               <td className="px-4 py-3">
-                <StatusBadgeInline status={member.status} />
+                <StatusBadgeInline status={member.status ?? "Verified"} />
               </td>
               <td className="px-4 py-3">
                 <div className="flex gap-2">
@@ -65,20 +65,20 @@ export default function MemberList({ members, onEdit, onDelete, onToggleStatus }
                   <button
                     onClick={() =>
                       onToggleStatus(
-                        member.memberId,
-                        member.status === "Verified" ? "Unverified" : "Verified"
+                        member.username,
+                        (member.status ?? "Verified") === "Verified" ? "Unverified" : "Verified"
                       )
                     }
                     className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
-                      member.status === "Verified"
+                      (member.status ?? "Verified") === "Verified"
                         ? "bg-yellow-50 text-yellow-600 hover:bg-yellow-100"
                         : "bg-green-50 text-green-600 hover:bg-green-100"
                     }`}
                   >
-                    {member.status === "Verified" ? "Deactivate" : "Activate"}
+                    {(member.status ?? "Verified") === "Verified" ? "Deactivate" : "Activate"}
                   </button>
                   <button
-                    onClick={() => onDelete(member.memberId)}
+                    onClick={() => onDelete(member.username)}
                     className="rounded-lg bg-red-50 px-2.5 py-1 text-xs font-medium text-red-500 transition hover:bg-red-100"
                   >
                     Delete

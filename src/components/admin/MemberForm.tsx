@@ -5,97 +5,99 @@ import { Member, Project, Certificate, Achievement, MemberStatus } from "@/types
 
 interface Props {
   initialData?: Member;
-  onSubmit: (data: Omit<Member, "memberId"> & { memberId: string }) => Promise<void>;
+  onSubmit: (data: Member) => Promise<void>;
   onCancel?: () => void;
 }
 
-const emptyMember = {
+const emptyMember: Member = {
+  username: "",
   name: "",
-  memberId: "",
-  registrationNumber: "",
+  email: "",
+  phone: "",
+  clubrole: "",
   department: "",
   year: "",
-  role: "",
-  profileImage: "",
   bio: "",
+  "registration number": "",
+  "profile Image": "",
+  skills: [],
+  projects: [],
+  certificates: [],
+  achievements: [],
   github: "",
   linkedin: "",
   portfolio: "",
-  skills: [] as string[],
-  projects: [] as Project[],
-  certificates: [] as Certificate[],
-  achievements: [] as Achievement[],
-  status: "Unverified" as MemberStatus,
+  status: "Verified",
 };
 
 export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
-  const [form, setForm] = useState(initialData ?? emptyMember);
+  const [form, setForm] = useState<Member>(initialData ?? emptyMember);
   const [submitting, setSubmitting] = useState(false);
 
-  const update = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) =>
+  const update = <K extends keyof Member>(key: K, value: Member[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
-  const addArrayItem = (field: "skills", value: string) =>
-    setForm((prev) => ({ ...prev, [field]: [...prev[field], value] }));
+  const addSkill = (value: string) =>
+    setForm((prev) => ({ ...prev, skills: [...(prev.skills ?? []), value] }));
 
-  const removeArrayItem = (field: "skills", index: number) =>
+  const removeSkill = (index: number) =>
     setForm((prev) => ({
       ...prev,
-      [field]: prev[field].filter((_, i) => i !== index),
+      skills: (prev.skills ?? []).filter((_, i) => i !== index),
     }));
 
   const addProject = () =>
     setForm((prev) => ({
       ...prev,
-      projects: [...prev.projects, { title: "", description: "", technologies: [], githubLink: "", liveDemo: "" }],
+      projects: [...(prev.projects ?? []), { title: "", description: "", technologies: [], githubLink: "", liveDemo: "" }],
     }));
 
   const updateProject = (index: number, data: Project) =>
     setForm((prev) => ({
       ...prev,
-      projects: prev.projects.map((p, i) => (i === index ? data : p)),
+      projects: (prev.projects ?? []).map((p, i) => (i === index ? data : p)),
     }));
 
   const removeProject = (index: number) =>
     setForm((prev) => ({
       ...prev,
-      projects: prev.projects.filter((_, i) => i !== index),
+      projects: (prev.projects ?? []).filter((_, i) => i !== index),
     }));
 
   const addCertificate = () =>
     setForm((prev) => ({
       ...prev,
-      certificates: [...prev.certificates, { name: "", issuingOrganization: "", issueDate: "" }],
+      certificates: [...(prev.certificates ?? []), { name: "", issuingOrganization: "", issueDate: "" }],
     }));
 
   const updateCertificate = (index: number, data: Certificate) =>
     setForm((prev) => ({
       ...prev,
-      certificates: prev.certificates.map((c, i) => (i === index ? data : c)),
+      certificates: (prev.certificates ?? []).map((c, i) => (i === index ? data : c)),
     }));
 
   const removeCertificate = (index: number) =>
     setForm((prev) => ({
       ...prev,
-      certificates: prev.certificates.filter((_, i) => i !== index),
+      certificates: (prev.certificates ?? []).filter((_, i) => i !== index),
     }));
 
   const addAchievement = () =>
     setForm((prev) => ({
       ...prev,
-      achievements: [...prev.achievements, { title: "", event: "", date: "", description: "" }],
+      achievements: [...(prev.achievements ?? []), { title: "", event: "", date: "", description: "" }],
     }));
 
   const updateAchievement = (index: number, data: Achievement) =>
     setForm((prev) => ({
       ...prev,
-      achievements: prev.achievements.map((a, i) => (i === index ? data : a)),
+      achievements: (prev.achievements ?? []).map((a, i) => (i === index ? data : a)),
     }));
 
   const removeAchievement = (index: number) =>
     setForm((prev) => ({
       ...prev,
-      achievements: prev.achievements.filter((_, i) => i !== index),
+      achievements: (prev.achievements ?? []).filter((_, i) => i !== index),
     }));
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -114,16 +116,24 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
+          <label className="mb-1 block text-sm text-text-secondary">Username (Document ID)</label>
+          <input className={inputClass} value={form.username} onChange={(e) => update("username", e.target.value)} required disabled={!!initialData} />
+        </div>
+        <div>
           <label className="mb-1 block text-sm text-text-secondary">Name</label>
           <input className={inputClass} value={form.name} onChange={(e) => update("name", e.target.value)} required />
         </div>
         <div>
-          <label className="mb-1 block text-sm text-text-secondary">Member ID</label>
-          <input className={inputClass} value={form.memberId} onChange={(e) => update("memberId", e.target.value)} required disabled={!!initialData} />
+          <label className="mb-1 block text-sm text-text-secondary">Email</label>
+          <input className={inputClass} type="email" value={form.email} onChange={(e) => update("email", e.target.value)} required />
         </div>
         <div>
-          <label className="mb-1 block text-sm text-text-secondary">Registration No.</label>
-          <input className={inputClass} value={form.registrationNumber} onChange={(e) => update("registrationNumber", e.target.value)} />
+          <label className="mb-1 block text-sm text-text-secondary">Phone</label>
+          <input className={inputClass} type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} />
+        </div>
+        <div>
+          <label className="mb-1 block text-sm text-text-secondary">Registration Number</label>
+          <input className={inputClass} value={form["registration number"]} onChange={(e) => update("registration number", e.target.value)} />
         </div>
         <div>
           <label className="mb-1 block text-sm text-text-secondary">Department</label>
@@ -134,18 +144,18 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
           <input className={inputClass} value={form.year} onChange={(e) => update("year", e.target.value)} />
         </div>
         <div>
-          <label className="mb-1 block text-sm text-text-secondary">Role</label>
-          <input className={inputClass} value={form.role} onChange={(e) => update("role", e.target.value)} />
+          <label className="mb-1 block text-sm text-text-secondary">Club Role</label>
+          <input className={inputClass} value={form.clubrole} onChange={(e) => update("clubrole", e.target.value)} />
         </div>
         <div>
           <label className="mb-1 block text-sm text-text-secondary">Profile Image URL</label>
-          <input className={inputClass} value={form.profileImage} onChange={(e) => update("profileImage", e.target.value)} />
+          <input className={inputClass} value={form["profile Image"]} onChange={(e) => update("profile Image", e.target.value)} />
         </div>
         <div>
           <label className="mb-1 block text-sm text-text-secondary">Status</label>
-          <select className={inputClass} value={form.status} onChange={(e) => update("status", e.target.value as MemberStatus)}>
-            <option value="Unverified">Unverified</option>
+          <select className={inputClass} value={form.status ?? "Verified"} onChange={(e) => update("status", e.target.value as MemberStatus)}>
             <option value="Verified">Verified</option>
+            <option value="Unverified">Unverified</option>
             <option value="Inactive">Inactive</option>
           </select>
         </div>
@@ -157,21 +167,21 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
       </div>
 
       <div>
-        <label className="mb-1 block text-sm text-text-secondary">Links</label>
+        <label className="mb-1 block text-sm text-text-secondary">Social Links</label>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <input className={inputClass} placeholder="GitHub URL" value={form.github} onChange={(e) => update("github", e.target.value)} />
-          <input className={inputClass} placeholder="LinkedIn URL" value={form.linkedin} onChange={(e) => update("linkedin", e.target.value)} />
-          <input className={inputClass} placeholder="Portfolio URL" value={form.portfolio} onChange={(e) => update("portfolio", e.target.value)} />
+          <input className={inputClass} placeholder="GitHub URL" value={form.github ?? ""} onChange={(e) => update("github", e.target.value)} />
+          <input className={inputClass} placeholder="LinkedIn URL" value={form.linkedin ?? ""} onChange={(e) => update("linkedin", e.target.value)} />
+          <input className={inputClass} placeholder="Portfolio URL" value={form.portfolio ?? ""} onChange={(e) => update("portfolio", e.target.value)} />
         </div>
       </div>
 
       <div>
         <label className="mb-1 block text-sm text-text-secondary">Skills</label>
         <div className="flex flex-wrap gap-2">
-          {form.skills.map((s, i) => (
+          {(form.skills ?? []).map((s, i) => (
             <span key={i} className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-sm text-primary">
               {s}
-              <button type="button" onClick={() => removeArrayItem("skills", i)} className="ml-1 text-primary/60 hover:text-primary">&times;</button>
+              <button type="button" onClick={() => removeSkill(i)} className="ml-1 text-primary/60 hover:text-primary">&times;</button>
             </span>
           ))}
         </div>
@@ -180,12 +190,12 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
             if (e.key === "Enter") {
               e.preventDefault();
               const el = document.getElementById("skill-input") as HTMLInputElement;
-              if (el.value.trim()) { addArrayItem("skills", el.value.trim()); el.value = ""; }
+              if (el.value.trim()) { addSkill(el.value.trim()); el.value = ""; }
             }
           }} />
           <button type="button" onClick={() => {
             const el = document.getElementById("skill-input") as HTMLInputElement;
-            if (el.value.trim()) { addArrayItem("skills", el.value.trim()); el.value = ""; }
+            if (el.value.trim()) { addSkill(el.value.trim()); el.value = ""; }
           }} className="rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-light">Add</button>
         </div>
       </div>
@@ -195,7 +205,7 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
           <label className="text-sm text-text-secondary">Projects</label>
           <button type="button" onClick={addProject} className="text-sm text-primary font-medium hover:text-primary-light">+ Add</button>
         </div>
-        {form.projects.map((p, i) => (
+        {(form.projects ?? []).map((p, i) => (
           <div key={i} className="mb-3 rounded-xl bg-primary-bg/30 border border-card-border p-4">
             <div className="mb-2 flex justify-between">
               <span className="text-sm font-medium text-text-primary">Project {i + 1}</span>
@@ -217,7 +227,7 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
           <label className="text-sm text-text-secondary">Certificates</label>
           <button type="button" onClick={addCertificate} className="text-sm text-primary font-medium hover:text-primary-light">+ Add</button>
         </div>
-        {form.certificates.map((c, i) => (
+        {(form.certificates ?? []).map((c, i) => (
           <div key={i} className="mb-3 rounded-xl bg-primary-bg/30 border border-card-border p-4">
             <div className="mb-2 flex justify-between">
               <span className="text-sm font-medium text-text-primary">Certificate {i + 1}</span>
@@ -237,7 +247,7 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
           <label className="text-sm text-text-secondary">Achievements</label>
           <button type="button" onClick={addAchievement} className="text-sm text-primary font-medium hover:text-primary-light">+ Add</button>
         </div>
-        {form.achievements.map((a, i) => (
+        {(form.achievements ?? []).map((a, i) => (
           <div key={i} className="mb-3 rounded-xl bg-primary-bg/30 border border-card-border p-4">
             <div className="mb-2 flex justify-between">
               <span className="text-sm font-medium text-text-primary">Achievement {i + 1}</span>

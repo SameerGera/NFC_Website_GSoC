@@ -16,7 +16,7 @@ interface Props {
 }
 
 export default function ProfileTabsWrapper({ member }: Props) {
-  const [tab, setTab] = useState<"overview" | "projects" | "credentials">("overview");
+  const [tab, setTab] = useState<"overview" | "projects" | "certificates" | "achievements">("overview");
 
   return (
     <>
@@ -34,11 +34,11 @@ export default function ProfileTabsWrapper({ member }: Props) {
         {tab === "projects" && (
           <ProfileProjects projects={member.projects} />
         )}
-        {tab === "credentials" && (
-          <>
-            <ProfileCertificates certificates={member.certificates} />
-            <ProfileAchievements achievements={member.achievements} />
-          </>
+        {tab === "certificates" && (
+          <ProfileCertificates certificates={member.certificates} />
+        )}
+        {tab === "achievements" && (
+          <ProfileAchievements achievements={member.achievements} />
         )}
       </div>
     </>

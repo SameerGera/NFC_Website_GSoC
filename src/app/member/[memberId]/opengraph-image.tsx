@@ -18,6 +18,8 @@ export default async function OpenGraphImage({
     member = null;
   }
 
+  const status = member?.status ?? "Verified";
+
   return new ImageResponse(
     (
       <div
@@ -33,7 +35,7 @@ export default async function OpenGraphImage({
           fontFamily: "system-ui, sans-serif",
         }}
       >
-        {member && member.status === "Verified" ? (
+        {member && status === "Verified" ? (
           <>
             <div
               style={{
@@ -43,9 +45,9 @@ export default async function OpenGraphImage({
                 marginBottom: 24,
               }}
             >
-              {member.profileImage ? (
+              {member["profile Image"] ? (
                 <img
-                  src={member.profileImage}
+                  src={member["profile Image"]}
                   alt=""
                   width={120}
                   height={120}
@@ -66,7 +68,7 @@ export default async function OpenGraphImage({
                     border: "4px solid rgba(59,130,246,0.3)",
                   }}
                 >
-                  {member.name.charAt(0)}
+                  {member.name?.charAt(0)}
                 </div>
               )}
               <div style={{ display: "flex", flexDirection: "column" }}>
@@ -74,10 +76,10 @@ export default async function OpenGraphImage({
                   {member.name}
                 </span>
                 <span style={{ fontSize: 24, color: "#3B82F6" }}>
-                  {member.role}
+                  {member.clubrole}
                 </span>
                 <span style={{ fontSize: 18, color: "#6B7280", marginTop: 4 }}>
-                  {member.department} &middot; {member.memberId}
+                  {member.department} &middot; {member.username}
                 </span>
               </div>
             </div>

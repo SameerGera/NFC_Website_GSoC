@@ -1,7 +1,7 @@
 import { MemberStatus } from "@/types/member";
 
 interface Props {
-  status: MemberStatus;
+  status?: MemberStatus;
 }
 
 const messages: Record<MemberStatus, { title: string; desc: string }> = {
@@ -20,7 +20,7 @@ const messages: Record<MemberStatus, { title: string; desc: string }> = {
 };
 
 export default function ProfileStatus({ status }: Props) {
-  if (status === "Verified") return null;
+  if (!status || status === "Verified") return null;
 
   const msg = messages[status];
 

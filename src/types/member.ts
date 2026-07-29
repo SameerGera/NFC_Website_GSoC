@@ -22,20 +22,22 @@ export interface Achievement {
 }
 
 export interface Member {
+  username: string;
   name: string;
-  memberId: string;
-  registrationNumber: string;
+  email: string;
+  phone: string;
+  clubrole: string;
   department: string;
   year: string;
-  role: string;
-  profileImage: string;
   bio: string;
-  github: string;
-  linkedin: string;
-  portfolio: string;
-  skills: string[];
-  projects: Project[];
-  certificates: Certificate[];
-  achievements: Achievement[];
-  status: MemberStatus;
+  "registration number": string;
+  "profile Image": string;
+  skills?: string[];
+  projects?: Project[];
+  certificates?: Certificate[];
+  achievements?: Achievement[];
+  github?: string;
+  linkedin?: string;
+  portfolio?: string;
+  status?: MemberStatus;
 }

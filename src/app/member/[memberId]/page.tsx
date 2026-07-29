@@ -18,26 +18,24 @@ export default async function MemberPage({
     notFound();
   }
 
-  if (member.status !== "Verified") {
+  const status = member.status ?? "Verified";
+
+  if (status !== "Verified") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-bg p-4">
-        <ProfileStatus status={member.status} />
+      <div className="flex min-h-[100dvh] items-center justify-center bg-bg p-4">
+        <ProfileStatus status={status} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-bg">
-      <div className="mx-auto max-w-lg px-4 pb-12">
+    <div className="min-h-[100dvh] bg-bg">
+      <div className="mx-auto max-w-xl px-3 pb-8 sm:px-4 sm:max-w-2xl">
         <ProfileCard member={member} />
 
-        <div className="mt-4">
+        <div className="mt-2">
           <ProfileTabsWrapper member={member} />
         </div>
-
-        <footer className="pt-8 text-center text-xs text-text-secondary">
-          GSOCK ID &middot; {member.memberId}
-        </footer>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { MemberStatus } from "@/types/member";
 
 interface Props {
-  status: MemberStatus;
+  status?: MemberStatus;
 }
 
 const styles: Record<MemberStatus, string> = {
@@ -11,11 +11,12 @@ const styles: Record<MemberStatus, string> = {
 };
 
 export default function StatusBadge({ status }: Props) {
+  const s = status ?? "Verified";
   return (
     <span
-      className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ${styles[status]}`}
+      className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ${styles[s]}`}
     >
-      {status}
+      {s}
     </span>
   );
 }

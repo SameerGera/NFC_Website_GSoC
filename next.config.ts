@@ -6,7 +6,7 @@ const ContentSecurityPolicy = `
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data: https:;
   font-src 'self';
-  connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://firestore.googleapis.com;
+  connect-src 'self' ws: wss: https://*.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://firestore.googleapis.com;
   frame-src 'self' https://*.firebaseapp.com;
   manifest-src 'self';
 `;
@@ -22,10 +22,6 @@ const securityHeaders = [
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
 ];
 
-const cacheHeaders = [
-  { key: "Cache-Control", value: "public, max-age=3600, stale-while-revalidate=86400" },
-];
-
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -35,7 +31,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/(.*)",
+        source: "/((?!_next/).*)",
         headers: securityHeaders,
       },
       {
@@ -46,7 +42,9 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/manifest.json",
-        headers: cacheHeaders,
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=3600, stale-while-revalidate=86400" },
+        ],
       },
       {
         source: "/api/member/:memberId",

@@ -37,6 +37,11 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  if (url.pathname.startsWith("/_next/")) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
   event.respondWith(
     fetch(request)
       .then((response) => {
@@ -46,7 +51,11 @@ self.addEventListener("fetch", (event) => {
         }
         return response;
       })
-      .catch(() => caches.match(request))
+      .catch(async () => {
+        const cached = await caches.match(request);
+        if (cached) return cached;
+        return new Response("Offline", { status: 503, statusText: "Offline" });
+      })
   );
 });
 

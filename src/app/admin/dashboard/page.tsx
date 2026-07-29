@@ -27,7 +27,7 @@ function DashboardContent() {
 
   const fetchMembers = async () => {
     const snap = await getDocs(collection(db(), "members"));
-    const list = snap.docs.map((d) => ({ ...d.data(), memberId: d.id } as Member));
+    const list = snap.docs.map((d) => ({ ...d.data(), username: d.id } as Member));
     setMembers(list);
   };
 
@@ -35,22 +35,22 @@ function DashboardContent() {
     fetchMembers();
   }, []);
 
-  const handleSave = async (data: Omit<Member, "memberId"> & { memberId: string }) => {
-    const { memberId, ...rest } = data;
-    await setDoc(doc(db(), "members", memberId), rest);
+  const handleSave = async (data: Member) => {
+    const { username, ...rest } = data;
+    await setDoc(doc(db(), "members", username), rest);
     setAdding(false);
     setEditing(null);
     await fetchMembers();
   };
 
-  const handleDelete = async (memberId: string) => {
+  const handleDelete = async (username: string) => {
     if (!confirm("Are you sure you want to delete this member?")) return;
-    await deleteDoc(doc(db(), "members", memberId));
+    await deleteDoc(doc(db(), "members", username));
     await fetchMembers();
   };
 
-  const handleToggleStatus = async (memberId: string, status: MemberStatus) => {
-    await updateDoc(doc(db(), "members", memberId), { status });
+  const handleToggleStatus = async (username: string, status: MemberStatus) => {
+    await updateDoc(doc(db(), "members", username), { status });
     await fetchMembers();
   };
 
@@ -62,7 +62,7 @@ function DashboardContent() {
   const filtered = members.filter(
     (m) =>
       m.name?.toLowerCase().includes(search.toLowerCase()) ||
-      m.memberId?.toLowerCase().includes(search.toLowerCase())
+      m.username?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -93,7 +93,7 @@ function DashboardContent() {
 
         <input
           type="text"
-          placeholder="Search by name or ID..."
+          placeholder="Search by name or username..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="mb-6 w-full rounded-xl border border-card-border bg-card px-4 py-2.5 text-sm text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
