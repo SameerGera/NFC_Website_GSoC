@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { Member } from "@/types/member";
 
 interface Props {
@@ -13,18 +16,22 @@ interface RowProps {
 
 function Row({ icon, label, value, href }: RowProps) {
   const content = (
-    <div className="flex items-center gap-2.5 py-1.5">
-      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
+    <motion.div
+      whileHover={{ x: 2 }}
+      whileTap={{ scale: 0.98 }}
+      className="flex items-center gap-2.5 py-2 transition-colors duration-200 rounded-xl px-1.5 -mx-1.5 cursor-default"
+    >
+      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0 transition-transform duration-200 hover:scale-110">
         {icon}
       </div>
       <span className="text-xs text-text-secondary">{label}</span>
       <span className="ml-auto text-xs font-medium text-text-primary truncate max-w-[160px]">{value}</span>
-    </div>
+    </motion.div>
   );
 
   if (href) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className="block transition active:bg-primary-bg rounded-xl px-1.5 -mx-1.5">
+      <a href={href} target="_blank" rel="noopener noreferrer" className="block transition-colors duration-200 hover:bg-primary-bg rounded-xl px-1.5 -mx-1.5">
         {content}
       </a>
     );
@@ -35,7 +42,12 @@ function Row({ icon, label, value, href }: RowProps) {
 
 export default function ProfileClubRole({ member }: Props) {
   return (
-    <div className="rounded-2xl bg-card border border-card-border p-4">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.05, duration: 0.3 }}
+      className="rounded-2xl bg-card border border-card-border p-4"
+    >
       <div className="mb-1.5 flex items-center gap-2.5">
         <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10">
           <svg className="h-3.5 w-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -87,6 +99,6 @@ export default function ProfileClubRole({ member }: Props) {
           />
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

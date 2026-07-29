@@ -30,7 +30,7 @@ export default async function MemberPage({
 
   return (
     <div className="min-h-[100dvh] bg-bg">
-      <div className="mx-auto max-w-xl px-3 pb-8 sm:px-4 sm:max-w-2xl">
+      <div className="mx-auto max-w-xl px-4 pb-8 sm:px-5 sm:max-w-2xl">
         <ProfileCard member={member} />
 
         <div className="mt-2">

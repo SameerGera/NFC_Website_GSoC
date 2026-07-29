@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Member } from "@/types/member";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -10,6 +11,7 @@ interface Props {
 
 export default function MemberIdCard({ member }: Props) {
   const [showCopied, setShowCopied] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
   const profileUrl = `https://id.gsock.tech/member/${member.username}`;
 
   const handleDownload = () => {
@@ -30,6 +32,8 @@ export default function MemberIdCard({ member }: Props) {
       a.download = `gsock-id-${member.username}.png`;
       a.href = canvas.toDataURL("image/png");
       a.click();
+      setDownloaded(true);
+      setTimeout(() => setDownloaded(false), 2000);
     };
     img.src = "data:image/svg+xml;base64," + btoa(svgData);
   };
@@ -55,7 +59,12 @@ export default function MemberIdCard({ member }: Props) {
   };
 
   return (
-    <div className="rounded-2xl bg-card border border-card-border p-4">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1, duration: 0.3 }}
+      className="rounded-2xl bg-card border border-card-border p-4"
+    >
       <div className="mb-3 flex items-center gap-2.5">
         <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10">
           <svg className="h-3.5 w-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -66,7 +75,13 @@ export default function MemberIdCard({ member }: Props) {
       </div>
 
       <div className="flex flex-col items-center gap-3">
-        <div className="flex h-36 w-36 items-center justify-center rounded-xl bg-white p-2 shadow-sm border border-card-border" id="qr-code">
+        <motion.div
+          initial={{ scale: 0.85, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.2, type: "spring", stiffness: 400, damping: 30 }}
+          className="flex h-36 w-36 items-center justify-center rounded-xl bg-white p-2 shadow-sm border border-card-border"
+          id="qr-code"
+        >
           <QRCodeSVG
             value={profileUrl}
             size={128}
@@ -75,31 +90,51 @@ export default function MemberIdCard({ member }: Props) {
             level="M"
             includeMargin={false}
           />
-        </div>
+        </motion.div>
         <p className="text-[11px] text-text-secondary">
           Scan this QR to view and verify this profile
         </p>
         <div className="flex w-full gap-2">
-          <button
+          <motion.button
             onClick={handleDownload}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary px-3 py-2.5 text-xs font-medium text-white transition active:scale-[0.97]"
+            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            className="group flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary px-3 py-2.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-primary-light hover:shadow-lg hover:shadow-primary/25"
           >
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            <svg className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              {downloaded ? (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              )}
             </svg>
-            Download QR
-          </button>
-          <button
+            {downloaded ? "Saved!" : "Download QR"}
+          </motion.button>
+          <motion.button
             onClick={handleShare}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-card-border bg-card px-3 py-2.5 text-xs font-medium text-text-primary transition active:scale-[0.97]"
+            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            className="group flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-card-border bg-card px-3 py-2.5 text-xs font-medium text-text-primary transition-colors duration-200 hover:bg-primary/5 hover:border-primary/30 hover:text-primary"
           >
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-            </svg>
-            {showCopied ? "Link Copied!" : "Share Profile"}
-          </button>
+            <motion.svg
+              animate={showCopied ? { rotate: [0, -10, 10, -5, 5, 0] } : {}}
+              transition={{ duration: 0.5 }}
+              className="h-3.5 w-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              {showCopied ? (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              )}
+            </motion.svg>
+            {showCopied ? "Copied!" : "Share Profile"}
+          </motion.button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

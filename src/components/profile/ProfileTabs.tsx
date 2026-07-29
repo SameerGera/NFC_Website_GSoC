@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 
 type Tab = "overview" | "projects" | "certificates" | "achievements";
 
 interface Props {
   onTabChange: (tab: Tab) => void;
+  initialTab?: Tab;
 }
 
 const tabs: { id: Tab; label: string }[] = [
@@ -15,24 +17,51 @@ const tabs: { id: Tab; label: string }[] = [
   { id: "achievements", label: "Achievements" },
 ];
 
-export default function ProfileTabs({ onTabChange }: Props) {
-  const [active, setActive] = useState<Tab>("overview");
+export default function ProfileTabs({ onTabChange, initialTab = "overview" }: Props) {
+  const [active, setActive] = useState<Tab>(initialTab);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<Map<Tab, HTMLButtonElement>>(new Map());
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+
+  useEffect(() => {
+    const btn = tabRefs.current.get(active);
+    const container = scrollRef.current;
+    if (btn && container) {
+      const containerRect = container.getBoundingClientRect();
+      const btnRect = btn.getBoundingClientRect();
+      setIndicatorStyle({
+        left: btnRect.left - containerRect.left + container.scrollLeft,
+        width: btnRect.width,
+      });
+    }
+  }, [active]);
 
   const handleTab = (tab: Tab) => {
     setActive(tab);
     onTabChange(tab);
+    const btn = tabRefs.current.get(tab);
+    btn?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
   };
 
   return (
-    <div className="flex overflow-x-auto hide-scrollbar rounded-2xl bg-card border border-card-border p-1 gap-1">
+    <div
+      ref={scrollRef}
+      className="relative flex overflow-x-auto hide-scrollbar rounded-2xl bg-card border border-card-border p-1"
+    >
+      <motion.div
+        className="absolute top-1 bottom-1 rounded-xl bg-primary shadow-md"
+        animate={{ left: indicatorStyle.left, width: indicatorStyle.width }}
+        transition={{ type: "spring", stiffness: 500, damping: 35 }}
+      />
       {tabs.map((tab) => (
         <button
           key={tab.id}
+          ref={(el) => { if (el) tabRefs.current.set(tab.id, el); }}
           onClick={() => handleTab(tab.id)}
-          className={`whitespace-nowrap rounded-xl py-2 px-3.5 text-[13px] font-medium transition-all duration-200 shrink-0 ${
+          className={`relative z-10 whitespace-nowrap rounded-xl py-2 px-3.5 text-[13px] font-medium transition-colors duration-200 shrink-0 ${
             active === tab.id
-              ? "bg-primary text-white shadow-sm"
-              : "text-text-secondary active:bg-primary/5"
+              ? "text-white"
+              : "text-text-secondary hover:text-text-primary"
           }`}
         >
           {tab.label}

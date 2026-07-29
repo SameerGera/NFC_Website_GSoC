@@ -27,7 +27,30 @@ function DashboardContent() {
 
   const fetchMembers = async () => {
     const snap = await getDocs(collection(db(), "members"));
-    const list = snap.docs.map((d) => ({ ...d.data(), username: d.id } as Member));
+    const list = snap.docs.map((d) => {
+      const raw = d.data();
+      const social = raw.social as Record<string, string> | undefined;
+      return {
+        username: d.id,
+        name: raw.name ?? "",
+        email: raw.email ?? "",
+        phone: raw.phone ?? "",
+        clubrole: raw.clubrole ?? "",
+        department: raw.department ?? "",
+        year: raw.year ?? "",
+        bio: raw.bio ?? "",
+        "registration number": raw["registration number"] ?? "",
+        "profile Image": raw["profile Image"] ?? "",
+        skills: raw.skills ?? [],
+        projects: raw.projects ?? [],
+        certificates: raw.certificates ?? [],
+        achievements: raw.achievements ?? [],
+        github: raw.github ?? "",
+        linkedin: social?.LinkedIn ?? social?.linkedin ?? raw.linkedin ?? "",
+        portfolio: raw.portfolio ?? "",
+        status: raw.status ?? "Verified",
+      } as Member;
+    });
     setMembers(list);
   };
 
