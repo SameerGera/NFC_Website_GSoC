@@ -2,6 +2,9 @@
 
 import { useState, useRef, useCallback } from "react";
 import { Member, Project, Certificate, Achievement, MemberStatus } from "@/types/member";
+import dynamic from "next/dynamic";
+
+const ImageEditor = dynamic(() => import("./ImageEditor"), { ssr: false });
 
 interface Props {
   initialData?: Member;
@@ -35,12 +38,13 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [editorFile, setEditorFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const update = <K extends keyof Member>(key: K, value: Member[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
-  const handleFileUpload = useCallback(async (file: File) => {
+  const uploadBlob = useCallback(async (blob: Blob) => {
     if (!form.username) {
       alert("Please enter a username first");
       return;
@@ -48,7 +52,7 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
     setUploading(true);
     try {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", blob, `${form.username}.jpg`);
       formData.append("username", form.username);
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       if (!res.ok) throw new Error("Upload failed");
@@ -63,14 +67,19 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) handleFileUpload(file);
+    if (file) setEditorFile(file);
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith("image/")) handleFileUpload(file);
+    if (file && file.type.startsWith("image/")) setEditorFile(file);
+  };
+
+  const handleEditorConfirm = async (blob: Blob) => {
+    setEditorFile(null);
+    await uploadBlob(blob);
   };
 
   const addSkill = (value: string) =>
@@ -362,6 +371,14 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
           </button>
         )}
       </div>
+
+      {editorFile && (
+        <ImageEditor
+          file={editorFile}
+          onConfirm={handleEditorConfirm}
+          onCancel={() => setEditorFile(null)}
+        />
+      )}
     </form>
   );
 }
