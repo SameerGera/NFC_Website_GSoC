@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Project } from "@/types/member";
+import { BentoItem } from "./BentoGrid";
 
 interface Props {
   projects?: Project[];
@@ -11,37 +12,30 @@ export default function ProfileProjects({ projects }: Props) {
   if (!projects || projects.length === 0) return null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="rounded-2xl bg-card border border-card-border p-4"
-    >
-      <div className="mb-3 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10">
-            <svg className="h-3.5 w-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-            </svg>
-          </div>
-          <h2 className="text-sm font-semibold text-text-primary">Projects</h2>
+    <BentoItem className="p-4">
+      <div className="mb-3 flex items-center gap-2.5">
+        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10">
+          <svg className="h-3.5 w-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
         </div>
+        <h2 className="text-sm font-semibold text-text-primary">Projects</h2>
       </div>
 
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3">
+      <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory touch-pan-x hide-scrollbar pb-1 -mx-1 px-1">
         {projects.map((project, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 + i * 0.06, duration: 0.3, ease: "easeOut" }}
-            whileHover={{ y: -3, boxShadow: "0 6px 24px rgba(37, 99, 235, 0.1)" }}
-            whileTap={{ scale: 0.97 }}
-            className="group rounded-xl bg-primary-bg/50 border border-card-border p-3 transition-colors duration-200 hover:border-primary/30"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.05 + i * 0.06, type: "spring", stiffness: 300, damping: 24 }}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className="group min-w-[200px] max-w-[240px] flex-shrink-0 snap-start rounded-2xl bg-primary-bg/50 border border-card-border p-3 transition-colors duration-200 hover:border-primary/30 dark:bg-slate-800/50 dark:border-slate-700/50"
           >
-            <div className="mb-2 flex h-24 items-center justify-center rounded-lg bg-card border border-card-border overflow-hidden">
+            <div className="mb-2 flex h-20 items-center justify-center rounded-xl bg-card border border-card-border overflow-hidden dark:bg-slate-900/80 dark:border-slate-700/50">
               <motion.svg
-                className="h-8 w-8 text-primary/30 transition-transform duration-300 group-hover:scale-110 group-hover:text-primary/50"
+                className="h-7 w-7 text-primary/30 transition-transform duration-300 group-hover:scale-110 group-hover:text-primary/50"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -56,7 +50,7 @@ export default function ProfileProjects({ projects }: Props) {
               {project.technologies.slice(0, 3).map((tech) => (
                 <span
                   key={tech}
-                  className="rounded-full bg-card border border-card-border px-1.5 py-0.5 text-[9px] font-medium text-text-secondary transition-colors duration-200 group-hover:border-primary/30 group-hover:text-primary"
+                  className="rounded-full bg-card border border-card-border px-1.5 py-0.5 text-[9px] font-medium text-text-secondary dark:bg-slate-800 dark:border-slate-700"
                 >
                   {tech}
                 </span>
@@ -89,6 +83,6 @@ export default function ProfileProjects({ projects }: Props) {
           </motion.div>
         ))}
       </div>
-    </motion.div>
+    </BentoItem>
   );
 }

@@ -1,21 +1,26 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { BentoItem } from "./BentoGrid";
 
 interface Props {
   skills?: string[];
 }
 
+const pillVariants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: (i: number) => ({
+    opacity: 1,
+    scale: 1,
+    transition: { delay: 0.05 + i * 0.03, type: "spring" as const, stiffness: 400, damping: 25 },
+  }),
+};
+
 export default function ProfileSkills({ skills }: Props) {
-  if (!skills || skills.length === 0) return null;
+  if (!skills || skills.filter((s) => s.trim()).length === 0) return null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.05, duration: 0.3 }}
-      className="rounded-2xl bg-card border border-card-border p-4"
-    >
+    <BentoItem className="p-4">
       <div className="mb-2.5 flex items-center gap-2.5">
         <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10">
           <svg className="h-3.5 w-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -24,19 +29,20 @@ export default function ProfileSkills({ skills }: Props) {
         </div>
         <h2 className="text-sm font-semibold text-text-primary">Skills</h2>
       </div>
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap gap-2">
         {skills.map((skill, i) => (
           <motion.span
             key={skill}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.1 + i * 0.03, duration: 0.25, type: "spring", stiffness: 400, damping: 25 }}
-            className="rounded-full border border-primary/30 bg-primary/5 px-2.5 py-0.5 text-[11px] font-medium text-primary transition-all duration-200 hover:bg-primary hover:text-white hover:border-primary hover:shadow-md hover:shadow-primary/20 cursor-default"
+            custom={i}
+            variants={pillVariants}
+            initial="hidden"
+            animate="visible"
+            className="rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary dark:bg-orange-500/10 dark:text-orange-300 cursor-default"
           >
             {skill}
           </motion.span>
         ))}
       </div>
-    </motion.div>
+    </BentoItem>
   );
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Member } from "@/types/member";
 import ProfileTabs from "@/components/profile/ProfileTabs";
+import { BentoGrid } from "@/components/profile/BentoGrid";
 import ProfileAbout from "@/components/profile/ProfileAbout";
 import ProfileSkills from "@/components/profile/ProfileSkills";
 import MemberIdCard from "@/components/profile/MemberIdCard";
@@ -40,24 +41,29 @@ export default function ProfileTabsWrapper({ member }: Props) {
             animate="animate"
             exit="exit"
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="space-y-3"
           >
             {tab === "overview" && (
-              <>
+              <BentoGrid>
                 <ProfileAbout bio={member.bio} />
                 <ProfileSkills skills={member.skills} />
                 <MemberIdCard member={member} />
                 <ProfileClubRole member={member} />
-              </>
+              </BentoGrid>
             )}
             {tab === "projects" && (
-              <ProfileProjects projects={member.projects} />
+              <BentoGrid>
+                <ProfileProjects projects={member.projects} />
+              </BentoGrid>
             )}
             {tab === "certificates" && (
-              <ProfileCertificates certificates={member.certificates} />
+              <BentoGrid>
+                <ProfileCertificates certificates={member.certificates} />
+              </BentoGrid>
             )}
             {tab === "achievements" && (
-              <ProfileAchievements achievements={member.achievements} />
+              <BentoGrid>
+                <ProfileAchievements achievements={member.achievements} />
+              </BentoGrid>
             )}
           </motion.div>
         </AnimatePresence>

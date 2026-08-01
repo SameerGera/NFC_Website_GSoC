@@ -1,18 +1,35 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --bg: #F0F4F8;
+  --bg: #FDFBF7;
   --card: #FFFFFF;
-  --card-border: #E2E8F0;
+  --card-border: #E8E4DB;
   --primary: #2563EB;
   --primary-light: #3B82F6;
   --primary-bg: #EFF6FF;
-  --text-primary: #0F172A;
-  --text-secondary: #64748B;
+  --text-primary: #1A1A1A;
+  --text-secondary: #6B7280;
   --verified: #2563EB;
   --accent: #7C3AED;
   --success: #059669;
-  --surface: #F8FAFC;
+  --surface: #F5F3EE;
+}
+
+.dark {
+  --bg: #090D16;
+  --card: #111827;
+  --card-border: #1F2937;
+  --primary: #3B82F6;
+  --primary-light: #60A5FA;
+  --primary-bg: rgba(59, 130, 246, 0.1);
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --verified: #60A5FA;
+  --accent: #A78BFA;
+  --success: #34D399;
+  --surface: #0F172A;
 }
 
 @theme inline {
@@ -54,6 +71,7 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
+  transition: background-color 300ms ease, color 300ms ease;
 }
 
 input, select, textarea, button {
@@ -81,34 +99,20 @@ input, select, textarea, button {
   }
 }
 
-/* Smooth transitions for interactive elements */
-button, a {
-  transition-property: transform, color, background-color, box-shadow, border-color, opacity;
+/* Smooth theme transitions */
+button, a, div, section, nav, header, footer, main, aside, span, p, h1, h2, h3, h4, h5, h6 {
+  transition-property: background-color, border-color, color, box-shadow, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 200ms;
+  transition-duration: 300ms;
 }
 
-/* Selection color */
 ::selection {
   background-color: rgba(37, 99, 235, 0.15);
   color: var(--text-primary);
 }
 
-/* Focus visible for accessibility */
 :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
   border-radius: 8px;
-}
-
-/* Smooth page transitions */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
