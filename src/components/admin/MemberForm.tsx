@@ -207,10 +207,16 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
           >
             {form["profile Image"] ? (
               <div className="flex flex-col items-center gap-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
+                  key={form["profile Image"]}
                   src={form["profile Image"]}
                   alt="Preview"
+                  crossOrigin="anonymous"
                   className="h-20 w-20 rounded-full object-cover border-2 border-card-border"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
                 />
                 <span className="text-xs text-text-secondary">Click or drag to replace</span>
               </div>
