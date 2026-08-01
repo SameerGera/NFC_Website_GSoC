@@ -22,7 +22,8 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
 
     const b64 = buffer.toString("base64");
-    const dataURI = `data:${file.type};base64,${b64}`;
+    const mimeType = file.type || "image/jpeg";
+    const dataURI = `data:${mimeType};base64,${b64}`;
 
     const result = await new Promise<{ secure_url: string }>((resolve, reject) => {
       cloudinary.uploader.upload(
@@ -31,14 +32,19 @@ export async function POST(request: NextRequest) {
           folder: "gsock-profiles",
           public_id: username,
           overwrite: true,
+          resource_type: "image",
           transformation: [
             { width: 400, height: 400, crop: "fill", gravity: "face" },
             { quality: "auto", fetch_format: "auto" },
           ],
         },
         (error, result) => {
-          if (error) reject(error);
-          else resolve(result as { secure_url: string });
+          if (error) {
+            console.error("Cloudinary error:", error.message);
+            reject(error);
+          } else {
+            resolve(result as { secure_url: string });
+          }
         }
       );
     });
@@ -49,8 +55,9 @@ export async function POST(request: NextRequest) {
     );
 
     return NextResponse.json({ url: result.secure_url });
-  } catch (error) {
-    console.error("Upload failed:", error);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("Upload failed:", message);
+    return NextResponse.json({ error: "Upload failed", details: message }, { status: 500 });
   }
 }

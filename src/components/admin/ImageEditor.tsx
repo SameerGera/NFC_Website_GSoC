@@ -174,7 +174,7 @@ export default function ImageEditor({ file, onConfirm, onCancel }: Props) {
           {/* Header */}
           <div className="flex items-center justify-between border-b border-card-border px-4 py-3">
             <h3 className="text-sm font-semibold text-text-primary">Edit Photo</h3>
-            <button onClick={onCancel} className="text-text-secondary hover:text-text-primary transition-colors">
+            <button type="button" onClick={onCancel} className="text-text-secondary hover:text-text-primary transition-colors">
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -221,6 +221,7 @@ export default function ImageEditor({ file, onConfirm, onCancel }: Props) {
             {tabs.map((t) => (
               <button
                 key={t.id}
+                type="button"
                 onClick={() => setTab(t.id)}
                 className={`flex flex-1 items-center justify-center gap-1.5 py-2.5 text-xs font-medium transition-colors ${
                   tab === t.id
@@ -255,6 +256,7 @@ export default function ImageEditor({ file, onConfirm, onCancel }: Props) {
                   {aspectRatios.map((ar) => (
                     <button
                       key={ar.label}
+                      type="button"
                       onClick={() => setAspect(ar.value)}
                       className={`flex-1 rounded-xl py-1.5 text-xs font-medium transition-all ${
                         aspect === ar.value
@@ -290,6 +292,7 @@ export default function ImageEditor({ file, onConfirm, onCancel }: Props) {
                   </div>
                 ))}
                 <button
+                  type="button"
                   onClick={() => { setBrightness(100); setContrast(100); setSaturation(100); }}
                   className="w-full rounded-xl bg-primary/10 py-1.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
                 >
@@ -307,6 +310,7 @@ export default function ImageEditor({ file, onConfirm, onCancel }: Props) {
                     </svg>
                     <span className="text-xs text-green-600 dark:text-green-400">Background removed</span>
                     <button
+                      type="button"
                       onClick={() => { setBgRemoved(false); setProcessedUrl(null); }}
                       className="ml-auto text-xs text-green-600 dark:text-green-400 underline"
                     >
@@ -315,6 +319,7 @@ export default function ImageEditor({ file, onConfirm, onCancel }: Props) {
                   </div>
                 ) : (
                   <button
+                    type="button"
                     onClick={handleRemoveBg}
                     disabled={removingBg}
                     className="w-full rounded-xl bg-primary/10 py-3 text-xs font-medium text-primary hover:bg-primary/20 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
@@ -344,12 +349,14 @@ export default function ImageEditor({ file, onConfirm, onCancel }: Props) {
           {/* Confirm */}
           <div className="flex gap-3 border-t border-card-border px-4 py-3">
             <button
+              type="button"
               onClick={onCancel}
               className="flex-1 rounded-2xl border border-card-border bg-card py-2.5 text-xs font-medium text-text-primary hover:bg-primary/5 transition-colors"
             >
               Cancel
             </button>
             <button
+              type="button"
               onClick={handleConfirm}
               disabled={removingBg}
               className="flex-1 rounded-2xl bg-primary py-2.5 text-xs font-medium text-white hover:bg-primary-light transition-colors disabled:opacity-50"

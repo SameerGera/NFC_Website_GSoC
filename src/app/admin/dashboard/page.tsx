@@ -16,6 +16,7 @@ function DashboardContent() {
   const [adding, setAdding] = useState(false);
   const [search, setSearch] = useState("");
   const [user, setUser] = useState<User | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -24,6 +25,11 @@ function DashboardContent() {
     });
     return unsub;
   }, []);
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 3000);
+  };
 
   const fetchMembers = async () => {
     const snap = await getDocs(collection(db(), "members"));
@@ -61,15 +67,17 @@ function DashboardContent() {
   const handleSave = async (data: Member) => {
     const { username, ...rest } = data;
     await setDoc(doc(db(), "members", username), rest);
+    await fetchMembers();
+    showToast(editing ? "Member updated!" : "Member added!");
     setAdding(false);
     setEditing(null);
-    await fetchMembers();
   };
 
   const handleDelete = async (username: string) => {
     if (!confirm("Are you sure you want to delete this member?")) return;
     await deleteDoc(doc(db(), "members", username));
     await fetchMembers();
+    showToast("Member deleted");
   };
 
   const handleToggleStatus = async (username: string, status: MemberStatus) => {
@@ -113,6 +121,15 @@ function DashboardContent() {
             </button>
           </div>
         </div>
+
+        {toast && (
+          <div className="mb-4 rounded-2xl bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 px-4 py-3 text-sm font-medium text-green-700 dark:text-green-400 flex items-center gap-2">
+            <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            {toast}
+          </div>
+        )}
 
         <input
           type="text"

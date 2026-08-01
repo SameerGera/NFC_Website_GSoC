@@ -361,12 +361,23 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
         <button
           type="submit"
           disabled={submitting}
-          className="rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-white transition hover:bg-primary-light disabled:opacity-50"
+          className="relative overflow-hidden rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-white transition hover:bg-primary-light disabled:opacity-80 min-w-[140px]"
         >
-          {submitting ? "Saving..." : initialData ? "Update Member" : "Add Member"}
+          {submitting && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 bg-primary-light/30 animate-pulse" />
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent relative z-10" />
+            </div>
+          )}
+          <span className={submitting ? "invisible" : ""}>
+            {initialData ? "Update Member" : "Add Member"}
+          </span>
+          {submitting && (
+            <span className="absolute inset-0 flex items-center justify-center text-sm font-medium">Saving...</span>
+          )}
         </button>
         {onCancel && (
-          <button type="button" onClick={onCancel} className="rounded-full border border-card-border bg-card px-6 py-2.5 text-sm font-medium text-text-primary transition hover:bg-primary-bg">
+          <button type="button" onClick={onCancel} disabled={submitting} className="rounded-full border border-card-border bg-card px-6 py-2.5 text-sm font-medium text-text-primary transition hover:bg-primary-bg disabled:opacity-50">
             Cancel
           </button>
         )}
