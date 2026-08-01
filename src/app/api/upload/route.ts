@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import { getAdminDb } from "@/lib/firebase-admin";
+import { normalizeImageUrl } from "@/lib/utils";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

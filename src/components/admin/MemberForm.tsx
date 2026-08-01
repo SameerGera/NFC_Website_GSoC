@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { Member, Project, Certificate, Achievement, MemberStatus } from "@/types/member";
+import { normalizeImageUrl } from "@/lib/utils";
 import dynamic from "next/dynamic";
 
 const ImageEditor = dynamic(() => import("./ImageEditor"), { ssr: false });
@@ -39,6 +40,7 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [editorFile, setEditorFile] = useState<File | null>(null);
+  const [imgError, setImgError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const update = <K extends keyof Member>(key: K, value: Member[K]) =>
@@ -205,7 +207,7 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
                 : "border-card-border bg-primary-bg/30 hover:border-primary/50 hover:bg-primary/5"
             }`}
           >
-            {form["profile Image"] ? (
+            {form["profile Image"] && !imgError ? (
               <div className="flex flex-col items-center gap-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -214,11 +216,18 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
                   alt="Preview"
                   crossOrigin="anonymous"
                   className="h-20 w-20 rounded-full object-cover border-2 border-card-border"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = "none";
-                  }}
+                  onError={() => setImgError(true)}
                 />
                 <span className="text-xs text-text-secondary">Click or drag to replace</span>
+              </div>
+            ) : form["profile Image"] && imgError ? (
+              <div className="flex flex-col items-center gap-2">
+                <div className="h-20 w-20 rounded-full bg-red-50 dark:bg-red-500/10 border-2 border-red-200 dark:border-red-500/20 flex items-center justify-center">
+                  <svg className="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                  </svg>
+                </div>
+                <button type="button" onClick={(e) => { e.stopPropagation(); setImgError(false); }} className="text-xs text-primary underline">Retry</button>
               </div>
             ) : uploading ? (
               <div className="flex flex-col items-center gap-2">
@@ -246,9 +255,14 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
             <input
               className={inputClass}
               value={form["profile Image"]}
-              onChange={(e) => update("profile Image", e.target.value)}
-              placeholder="https://..."
+              onChange={(e) => { update("profile Image", e.target.value); setImgError(false); }}
+              onBlur={(e) => {
+                const normalized = normalizeImageUrl(e.target.value);
+                if (normalized !== e.target.value) update("profile Image", normalized);
+              }}
+              placeholder="https://res.cloudinary.com/..."
             />
+            <p className="mt-1 text-[10px] text-text-secondary">Direct image links only (Cloudinary, Imgur, etc). Google Drive sharing links won&apos;t work.</p>
           </div>
         </div>
         <div>

@@ -5,6 +5,7 @@ import { collection, getDocs, doc, setDoc, deleteDoc, updateDoc } from "firebase
 import { signOut, onAuthStateChanged, User } from "firebase/auth";
 import { db, auth } from "@/lib/firebase-client";
 import { Member, MemberStatus } from "@/types/member";
+import { normalizeImageUrl } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import AuthGuard from "@/components/admin/AuthGuard";
 import MemberList from "@/components/admin/MemberList";
@@ -46,7 +47,7 @@ function DashboardContent() {
         year: raw.year ?? "",
         bio: raw.bio ?? "",
         "registration number": raw["registration number"] ?? "",
-        "profile Image": raw["profile Image"] ?? "",
+        "profile Image": normalizeImageUrl(raw["profile Image"] ?? ""),
         skills: raw.skills ?? [],
         projects: raw.projects ?? [],
         certificates: raw.certificates ?? [],

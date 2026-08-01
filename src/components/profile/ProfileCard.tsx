@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Member } from "@/types/member";
@@ -14,6 +15,8 @@ const socialBtn =
 
 export default function ProfileCard({ member }: Props) {
   const isVerified = member.status === "Verified";
+  const [imgError, setImgError] = useState(false);
+  const hasImage = !!member["profile Image"] && !imgError;
 
   return (
     <>
@@ -55,11 +58,14 @@ export default function ProfileCard({ member }: Props) {
 
           {/* Avatar */}
           <div className="relative h-24 w-24 overflow-hidden rounded-full border-[3px] border-card bg-card">
-            {member["profile Image"] ? (
+            {hasImage ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={member["profile Image"]}
+                src={member["profile Image"]!}
                 alt={member.name}
+                crossOrigin="anonymous"
                 className="h-full w-full object-cover"
+                onError={() => setImgError(true)}
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-3xl font-bold text-primary">

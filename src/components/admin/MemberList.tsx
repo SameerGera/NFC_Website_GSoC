@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Member, MemberStatus } from "@/types/member";
 
 interface Props {
@@ -7,6 +8,30 @@ interface Props {
   onEdit: (member: Member) => void;
   onDelete: (username: string) => void;
   onToggleStatus: (username: string, status: MemberStatus) => void;
+}
+
+function MemberAvatar({ member }: { member: Member }) {
+  const [imgError, setImgError] = useState(false);
+  const hasImage = !!member["profile Image"] && !imgError;
+
+  return (
+    <div className="h-8 w-8 overflow-hidden rounded-full bg-primary-bg">
+      {hasImage ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={member["profile Image"]!}
+          alt=""
+          crossOrigin="anonymous"
+          className="h-full w-full object-cover"
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center text-xs text-primary font-medium">
+          {member.name.charAt(0)}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function MemberList({ members, onEdit, onDelete, onToggleStatus }: Props) {
@@ -36,15 +61,7 @@ export default function MemberList({ members, onEdit, onDelete, onToggleStatus }
             <tr key={member.username} className="border-b border-card-border/50 transition hover:bg-primary-bg/30">
               <td className="px-4 py-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 overflow-hidden rounded-full bg-primary-bg">
-                    {member["profile Image"] ? (
-                      <img src={member["profile Image"]} alt="" className="h-full w-full object-cover" />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center text-xs text-primary font-medium">
-                        {member.name.charAt(0)}
-                      </div>
-                    )}
-                  </div>
+                  <MemberAvatar member={member} />
                   <span className="font-medium text-text-primary">{member.name}</span>
                 </div>
               </td>

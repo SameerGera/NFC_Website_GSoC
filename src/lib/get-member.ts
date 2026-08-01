@@ -1,5 +1,6 @@
 import { getAdminDb } from "@/lib/firebase-admin";
 import { Member } from "@/types/member";
+import { normalizeImageUrl } from "@/lib/utils";
 
 export async function getMember(memberId: string): Promise<Member | null> {
   try {
@@ -53,7 +54,7 @@ export async function getMember(memberId: string): Promise<Member | null> {
       year: raw.year ?? "",
       bio: raw.bio ?? "",
       "registration number": raw["registration number"] ?? "",
-      "profile Image": raw["profile Image"] ?? "",
+      "profile Image": normalizeImageUrl(raw["profile Image"] ?? ""),
       skills: Array.isArray(raw.skills) ? raw.skills.filter((s: unknown) => typeof s === "string" && s.trim()) : [],
       projects,
       certificates,
