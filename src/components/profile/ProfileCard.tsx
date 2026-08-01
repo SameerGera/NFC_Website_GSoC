@@ -19,29 +19,29 @@ export default function ProfileCard({ member }: Props) {
     <>
       <ThemeToggle />
 
+      {/* Branding logo — top left */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.1, type: "spring" as const, stiffness: 300, damping: 25 }}
+        className="fixed top-4 left-4 z-50"
+      >
+        <Image
+          src="/gsoc-logo.jpeg"
+          alt="GSOCK"
+          width={28}
+          height={28}
+          className="h-7 w-7 rounded-lg object-contain opacity-70 transition-opacity hover:opacity-100"
+          priority
+        />
+      </motion.div>
+
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
         className="relative flex flex-col items-center gap-3 pt-6 pb-5 rounded-3xl bg-card/60 border border-card-border shadow-xl"
       >
-        {/* GSOC Club Logo */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.05, type: "spring" as const, stiffness: 300, damping: 25 }}
-          className="relative"
-        >
-          <Image
-            src="/gsoc-logo.jpeg"
-            alt="GSOCK Club"
-            width={56}
-            height={56}
-            className="h-14 w-14 rounded-xl object-contain"
-            priority
-          />
-        </motion.div>
-
         {/* Avatar with pulsing ring + verified badge */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}

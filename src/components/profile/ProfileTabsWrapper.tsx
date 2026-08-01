@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useCallback } from "react";
+import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { Member } from "@/types/member";
 import ProfileTabs from "@/components/profile/ProfileTabs";
 import { BentoGrid } from "@/components/profile/BentoGrid";
@@ -19,28 +19,63 @@ interface Props {
 
 type TabKey = "overview" | "projects" | "certificates" | "achievements";
 
+const tabOrder: TabKey[] = ["overview", "projects", "certificates", "achievements"];
+
 const contentVariants = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
+  initial: (direction: number) => ({
+    opacity: 0,
+    x: direction > 0 ? 60 : -60,
+  }),
+  animate: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] },
+  },
+  exit: (direction: number) => ({
+    opacity: 0,
+    x: direction > 0 ? -60 : 60,
+    transition: { duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] },
+  }),
 };
 
 export default function ProfileTabsWrapper({ member }: Props) {
   const [tab, setTab] = useState<TabKey>("overview");
+  const [direction, setDirection] = useState(0);
+
+  const navigateTab = useCallback((newTab: TabKey) => {
+    setDirection(tabOrder.indexOf(newTab) > tabOrder.indexOf(tab) ? 1 : -1);
+    setTab(newTab);
+  }, [tab]);
+
+  const handleDragEnd = (_: unknown, info: PanInfo) => {
+    const swipeThreshold = 50;
+    const currentIndex = tabOrder.indexOf(tab);
+
+    if (info.offset.x < -swipeThreshold && currentIndex < tabOrder.length - 1) {
+      navigateTab(tabOrder[currentIndex + 1]);
+    } else if (info.offset.x > swipeThreshold && currentIndex > 0) {
+      navigateTab(tabOrder[currentIndex - 1]);
+    }
+  };
 
   return (
     <>
-      <ProfileTabs onTabChange={setTab} />
+      <ProfileTabs onTabChange={navigateTab} />
 
       <div className="mt-3">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={tab}
+            custom={direction}
             variants={contentVariants}
             initial="initial"
             animate="animate"
             exit="exit"
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.15}
+            onDragEnd={handleDragEnd}
+            className="touch-pan-y"
           >
             {tab === "overview" && (
               <BentoGrid>

@@ -7,7 +7,7 @@ type Tab = "overview" | "projects" | "certificates" | "achievements";
 
 interface Props {
   onTabChange: (tab: Tab) => void;
-  initialTab?: Tab;
+  activeTab?: Tab;
 }
 
 const tabs: { id: Tab; label: string }[] = [
@@ -17,11 +17,16 @@ const tabs: { id: Tab; label: string }[] = [
   { id: "achievements", label: "Achievements" },
 ];
 
-export default function ProfileTabs({ onTabChange, initialTab = "overview" }: Props) {
-  const [active, setActive] = useState<Tab>(initialTab);
+export default function ProfileTabs({ onTabChange, activeTab }: Props) {
+  const [internalActive, setInternalActive] = useState<Tab>(activeTab ?? "overview");
+  const active = activeTab ?? internalActive;
   const scrollRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Map<Tab, HTMLButtonElement>>(new Map());
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+
+  useEffect(() => {
+    if (activeTab) setInternalActive(activeTab);
+  }, [activeTab]);
 
   useEffect(() => {
     const btn = tabRefs.current.get(active);
@@ -37,7 +42,7 @@ export default function ProfileTabs({ onTabChange, initialTab = "overview" }: Pr
   }, [active]);
 
   const handleTab = (tab: Tab) => {
-    setActive(tab);
+    setInternalActive(tab);
     onTabChange(tab);
     const btn = tabRefs.current.get(tab);
     btn?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });

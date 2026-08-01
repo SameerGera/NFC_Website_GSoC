@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Member, Project, Certificate, Achievement, MemberStatus } from "@/types/member";
 
 interface Props {
@@ -33,9 +33,45 @@ const emptyMember: Member = {
 export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
   const [form, setForm] = useState<Member>(initialData ?? emptyMember);
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const update = <K extends keyof Member>(key: K, value: Member[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
+
+  const handleFileUpload = useCallback(async (file: File) => {
+    if (!form.username) {
+      alert("Please enter a username first");
+      return;
+    }
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("username", form.username);
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      if (!res.ok) throw new Error("Upload failed");
+      const { url } = await res.json();
+      update("profile Image", url);
+    } catch {
+      alert("Failed to upload image. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  }, [form.username]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleFileUpload(file);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) handleFileUpload(file);
+  };
 
   const addSkill = (value: string) =>
     setForm((prev) => ({ ...prev, skills: [...(prev.skills ?? []), value] }));
@@ -148,8 +184,57 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
           <input className={inputClass} value={form.clubrole} onChange={(e) => update("clubrole", e.target.value)} />
         </div>
         <div>
-          <label className="mb-1 block text-sm text-text-secondary">Profile Image URL</label>
-          <input className={inputClass} value={form["profile Image"]} onChange={(e) => update("profile Image", e.target.value)} />
+          <label className="mb-1 block text-sm text-text-secondary">Profile Image</label>
+          <div
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+            className={`relative flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-4 transition-all duration-200 ${
+              dragOver
+                ? "border-primary bg-primary/5"
+                : "border-card-border bg-primary-bg/30 hover:border-primary/50 hover:bg-primary/5"
+            }`}
+          >
+            {form["profile Image"] ? (
+              <div className="flex flex-col items-center gap-2">
+                <img
+                  src={form["profile Image"]}
+                  alt="Preview"
+                  className="h-20 w-20 rounded-full object-cover border-2 border-card-border"
+                />
+                <span className="text-xs text-text-secondary">Click or drag to replace</span>
+              </div>
+            ) : uploading ? (
+              <div className="flex flex-col items-center gap-2">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                <span className="text-xs text-text-secondary">Uploading...</span>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-1">
+                <svg className="h-8 w-8 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                </svg>
+                <span className="text-xs text-text-secondary">Click or drag photo here</span>
+              </div>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </div>
+          <div className="mt-2">
+            <label className="mb-1 block text-xs text-text-secondary">Or paste image URL</label>
+            <input
+              className={inputClass}
+              value={form["profile Image"]}
+              onChange={(e) => update("profile Image", e.target.value)}
+              placeholder="https://..."
+            />
+          </div>
         </div>
         <div>
           <label className="mb-1 block text-sm text-text-secondary">Status</label>
