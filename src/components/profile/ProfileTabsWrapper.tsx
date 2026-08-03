@@ -12,6 +12,7 @@ import ProfileClubRole from "@/components/profile/ProfileClubRole";
 import ProfileProjects from "@/components/profile/ProfileProjects";
 import ProfileCertificates from "@/components/profile/ProfileCertificates";
 import ProfileAchievements from "@/components/profile/ProfileAchievements";
+import DownloadResumeButton from "@/components/profile/DownloadResumeButton";
 
 interface Props {
   member: Member;
@@ -83,6 +84,9 @@ export default function ProfileTabsWrapper({ member }: Props) {
                 <ProfileSkills skills={member.skills} />
                 <MemberIdCard member={member} />
                 <ProfileClubRole member={member} />
+                <div className="mt-2">
+                  <DownloadResumeButton />
+                </div>
               </BentoGrid>
             )}
             {tab === "projects" && (

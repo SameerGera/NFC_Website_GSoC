@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Member } from "@/types/member";
 import ThemeToggle from "./ThemeToggle";
+import AddToContactsButton from "./AddToContactsButton";
 
 interface Props {
   member: Member;
@@ -227,6 +228,16 @@ export default function ProfileCard({ member }: Props) {
               </svg>
             </motion.a>
           )}
+        </motion.div>
+
+        {/* Add to Contacts button */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="w-full px-6"
+        >
+          <AddToContactsButton member={member} />
         </motion.div>
       </motion.div>
     </>

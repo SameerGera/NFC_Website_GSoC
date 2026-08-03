@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 
 type Tab = "overview" | "projects" | "certificates" | "achievements";
@@ -23,10 +23,6 @@ export default function ProfileTabs({ onTabChange, activeTab }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Map<Tab, HTMLButtonElement>>(new Map());
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
-
-  useEffect(() => {
-    if (activeTab) setInternalActive(activeTab);
-  }, [activeTab]);
 
   useEffect(() => {
     const btn = tabRefs.current.get(active);

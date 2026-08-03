@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function NotFound() {
   return (
     <div className="flex min-h-[100dvh] items-center justify-center bg-bg p-4">
@@ -11,12 +13,12 @@ export default function NotFound() {
         <p className="text-sm text-text-secondary">
           This member profile doesn&apos;t exist or may have been removed.
         </p>
-        <a
+        <Link
           href="/"
           className="mt-4 inline-block rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-light"
         >
           Go Home
-        </a>
+        </Link>
       </div>
     </div>
   );

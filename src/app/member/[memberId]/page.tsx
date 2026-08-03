@@ -3,6 +3,7 @@ import { getMember } from "@/lib/get-member";
 import ProfileCard from "@/components/profile/ProfileCard";
 import ProfileTabsWrapper from "@/components/profile/ProfileTabsWrapper";
 import ProfileStatus from "@/components/profile/ProfileStatus";
+import ResumeView from "@/components/profile/ResumeView";
 
 export const dynamic = "force-dynamic";
 
@@ -36,14 +37,17 @@ export default async function MemberPage({
   }
 
   return (
-    <div className="min-h-[100dvh] bg-bg">
-      <div className="mx-auto max-w-xl px-4 pb-8 sm:px-5 sm:max-w-2xl">
-        <ProfileCard member={member} />
+    <>
+      <div className="min-h-[100dvh] bg-bg print:hidden">
+        <div className="mx-auto max-w-xl px-4 pb-8 sm:px-5 sm:max-w-2xl">
+          <ProfileCard member={member} />
 
-        <div className="mt-2">
-          <ProfileTabsWrapper member={member} />
+          <div className="mt-2">
+            <ProfileTabsWrapper member={member} />
+          </div>
         </div>
       </div>
-    </div>
+      <ResumeView member={member} />
+    </>
   );
 }
