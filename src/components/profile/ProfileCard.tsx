@@ -60,8 +60,8 @@ export default function ProfileCard({ member }: Props) {
           {/* Avatar */}
           <div className="relative h-24 w-24 overflow-hidden rounded-full border-[3px] border-card bg-card">
             {hasImage ? (
-              // eslint-disable-next-line @next/next/no-img-element
               <img
+                key={member["profile Image"]}
                 src={member["profile Image"]!}
                 alt={member.name}
                 className="h-full w-full object-cover"

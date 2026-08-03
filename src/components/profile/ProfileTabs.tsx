@@ -34,14 +34,14 @@ export default function ProfileTabs({ onTabChange, activeTab }: Props) {
         left: btnRect.left - containerRect.left + container.scrollLeft,
         width: btnRect.width,
       });
+      // Scroll the button into view if active changes (e.g., from swipe)
+      btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
     }
   }, [active]);
 
   const handleTab = (tab: Tab) => {
     setInternalActive(tab);
     onTabChange(tab);
-    const btn = tabRefs.current.get(tab);
-    btn?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
   };
 
   return (

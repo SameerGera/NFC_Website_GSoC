@@ -61,7 +61,7 @@ export default function ProfileTabsWrapper({ member }: Props) {
 
   return (
     <>
-      <ProfileTabs onTabChange={navigateTab} />
+      <ProfileTabs activeTab={tab} onTabChange={navigateTab} />
 
       <div className="mt-3">
         <AnimatePresence mode="wait" custom={direction}>

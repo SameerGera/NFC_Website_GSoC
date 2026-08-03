@@ -115,7 +115,7 @@ export default function MemberIdCard({ member }: Props) {
           {/* Front Face */}
           <div 
             className="absolute inset-0 rounded-2xl overflow-hidden shadow-xl bg-card border border-card-border"
-            style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(0deg)" } as any}
+            style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(0deg) translateZ(1px)" } as any}
           >
             <div className="absolute inset-0 z-0">
               <div className="absolute inset-0 opacity-10 bg-[linear-gradient(110deg,transparent_20%,var(--color-primary)_30%,transparent_40%,var(--color-accent)_60%,transparent_80%)] animate-[shimmer_3s_infinite_linear]" />
@@ -139,6 +139,7 @@ export default function MemberIdCard({ member }: Props) {
                 <div className="w-16 h-16 rounded-full border-2 border-primary/20 bg-surface flex-shrink-0 flex items-center justify-center shadow-md overflow-hidden">
                   {hasImage ? (
                     <img 
+                      key={member["profile Image"]}
                       src={member["profile Image"]!} 
                       alt={member.name} 
                       className="w-full h-full object-cover"
@@ -172,7 +173,7 @@ export default function MemberIdCard({ member }: Props) {
           {/* Back Face */}
           <div 
             className="absolute inset-0 rounded-2xl overflow-hidden shadow-xl bg-card border border-card-border flex flex-col items-center justify-center p-4"
-            style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(180deg)" } as any}
+            style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(180deg) translateZ(1px)" } as any}
           >
             <div className="text-xs font-bold text-text-primary mb-2 uppercase tracking-wider">Scan to Verify</div>
             
