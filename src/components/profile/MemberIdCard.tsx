@@ -114,15 +114,15 @@ export default function MemberIdCard({ member }: Props) {
         >
           {/* Front Face */}
           <div 
-            className="absolute inset-0 rounded-2xl overflow-hidden shadow-xl"
-            style={{ backfaceVisibility: "hidden" }}
+            className="absolute inset-0 rounded-2xl overflow-hidden shadow-xl bg-card border border-card-border"
+            style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(0deg)" } as any}
           >
-            <div className="absolute inset-0 bg-card border border-card-border z-0">
+            <div className="absolute inset-0 z-0">
               <div className="absolute inset-0 opacity-10 bg-[linear-gradient(110deg,transparent_20%,var(--color-primary)_30%,transparent_40%,var(--color-accent)_60%,transparent_80%)] animate-[shimmer_3s_infinite_linear]" />
               <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
             </div>
 
-            <div className="relative z-10 p-5 h-full flex flex-col justify-between text-text-primary">
+            <div className="relative z-10 p-5 h-full flex flex-col justify-between text-text-primary bg-card/40 backdrop-blur-[2px]">
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-surface rounded-lg flex items-center justify-center p-1 border border-card-border">
@@ -172,7 +172,7 @@ export default function MemberIdCard({ member }: Props) {
           {/* Back Face */}
           <div 
             className="absolute inset-0 rounded-2xl overflow-hidden shadow-xl bg-card border border-card-border flex flex-col items-center justify-center p-4"
-            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+            style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(180deg)" } as any}
           >
             <div className="text-xs font-bold text-text-primary mb-2 uppercase tracking-wider">Scan to Verify</div>
             
