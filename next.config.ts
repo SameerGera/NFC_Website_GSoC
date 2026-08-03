@@ -6,7 +6,7 @@ const ContentSecurityPolicy = `
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data: https:;
   font-src 'self';
-  connect-src 'self' ws: wss: https://*.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://firestore.googleapis.com;
+  connect-src 'self' ws: wss: https://*.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://firestore.googleapis.com https://res.cloudinary.com https://*.cloudinary.com https://lh3.googleusercontent.com https://i.imgur.com;
   frame-src 'self' https://*.firebaseapp.com;
   manifest-src 'self';
 `;

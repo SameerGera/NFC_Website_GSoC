@@ -63,7 +63,6 @@ export default function ProfileCard({ member }: Props) {
               <img
                 src={member["profile Image"]!}
                 alt={member.name}
-                crossOrigin="anonymous"
                 className="h-full w-full object-cover"
                 onError={() => setImgError(true)}
               />

@@ -214,7 +214,6 @@ export default function MemberForm({ initialData, onSubmit, onCancel }: Props) {
                   key={form["profile Image"]}
                   src={form["profile Image"]}
                   alt="Preview"
-                  crossOrigin="anonymous"
                   className="h-20 w-20 rounded-full object-cover border-2 border-card-border"
                   onError={() => setImgError(true)}
                 />
