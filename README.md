@@ -137,7 +137,7 @@ interface Achievement {
 ### 1. Clone & Install
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/GSOC-Innovators-Club/GSOCK-ID.git
 cd gsock-id
 npm install
 ```
@@ -297,4 +297,4 @@ npm run lint       # ESLint (Next.js config)
 
 ## License
 
-MIT — Built for GSOCK Club.
+This Project is under Apache-2.0 license. Check it out [Here](LICENSE).
