@@ -19,6 +19,7 @@ export default function MemberIdCard({ member }: Props) {
   const profileUrl = `https://id.gsock.tech/member/${member.username}`;
   
   const cardRef = useRef<HTMLDivElement>(null);
+  const qrRef = useRef<HTMLDivElement>(null);
   
   // 3D Tilt Effect
   const x = useMotionValue(0);
@@ -49,7 +50,7 @@ export default function MemberIdCard({ member }: Props) {
 
   const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const svg = document.querySelector("#qr-card-svg svg") as SVGElement | null;
+    const svg = qrRef.current?.querySelector("svg") as SVGElement | null;
     if (!svg) return;
     const svgData = new XMLSerializer().serializeToString(svg);
     const canvas = document.createElement("canvas");
@@ -106,7 +107,11 @@ export default function MemberIdCard({ member }: Props) {
         className="relative w-full max-w-[320px] aspect-[1.58]"
       >
         <motion.div
+          role="button"
+          tabIndex={0}
+          aria-label={isFlipped ? "Flip card to front" : "Flip card to back"}
           onClick={() => setIsFlipped(!isFlipped)}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setIsFlipped(!isFlipped); } }}
           animate={{ rotateY: isFlipped ? 180 : 0 }}
           transition={{ type: "spring", stiffness: 200, damping: 20 }}
           style={{ transformStyle: "preserve-3d" } as any}
@@ -146,7 +151,7 @@ export default function MemberIdCard({ member }: Props) {
                       onError={() => setImgError(true)}
                     />
                   ) : (
-                    <span className="text-2xl font-bold text-primary">{member.name.charAt(0)}</span>
+                    <span className="text-2xl font-bold text-primary">{member.name?.charAt(0)}</span>
                   )}
                 </div>
                 
@@ -177,7 +182,7 @@ export default function MemberIdCard({ member }: Props) {
           >
             <div className="text-xs font-bold text-text-primary mb-2 uppercase tracking-wider">Scan to Verify</div>
             
-            <div id="qr-card-svg" className="bg-white p-2 rounded-xl shadow-sm border border-card-border">
+            <div ref={qrRef} className="bg-white p-2 rounded-xl shadow-sm border border-card-border">
               <QRCodeSVG
                 value={profileUrl}
                 size={110}

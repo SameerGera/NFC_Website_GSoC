@@ -12,10 +12,10 @@ export default function DownloadResumeButton() {
       onClick={handleDownload}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.97 }}
-      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary-bg/50 border border-primary/20 px-4 py-3 text-sm font-medium text-primary shadow-sm transition-colors hover:bg-primary/10 active:shadow-none dark:bg-slate-800/50 dark:border-slate-700 dark:text-primary-light"
+      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary-bg/50 border border-primary/20 px-4 py-3 text-sm font-medium text-primary shadow-sm transition-colors hover:bg-primary/10 active:shadow-none"
     >
       <svg
-        className="h-4.5 w-4.5"
+        className="h-[18px] w-[18px]"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"

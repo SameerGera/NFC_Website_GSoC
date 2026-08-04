@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Cropper from "react-easy-crop";
 
@@ -39,6 +39,11 @@ const panel = {
 export default function ImageEditor({ file, onConfirm, onCancel }: Props) {
   const [imageUrl] = useState(() => URL.createObjectURL(file));
   const [tab, setTab] = useState<Tab>("crop");
+
+  // Revoke Object URL on unmount to prevent memory leak
+  useEffect(() => {
+    return () => URL.revokeObjectURL(imageUrl);
+  }, [imageUrl]);
 
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);

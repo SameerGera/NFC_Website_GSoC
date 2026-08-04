@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Project } from "@/types/member";
 import { BentoItem } from "./BentoGrid";
+import { sanitizeUrl } from "@/utils/sanitizeUrl";
 
 interface Props {
   projects?: Project[];
@@ -59,7 +60,7 @@ export default function ProfileProjects({ projects }: Props) {
             <div className="flex gap-2.5 text-[11px]">
               {project.githubLink && (
                 <a
-                  href={project.githubLink}
+                  href={sanitizeUrl(project.githubLink)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1 text-primary transition-all duration-200 hover:underline hover:text-primary-light"
@@ -70,7 +71,7 @@ export default function ProfileProjects({ projects }: Props) {
               )}
               {project.liveDemo && (
                 <a
-                  href={project.liveDemo}
+                  href={sanitizeUrl(project.liveDemo)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1 text-primary transition-all duration-200 hover:underline hover:text-primary-light"

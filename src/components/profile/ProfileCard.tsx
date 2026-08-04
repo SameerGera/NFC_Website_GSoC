@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Member } from "@/types/member";
+import { sanitizeUrl } from "@/utils/sanitizeUrl";
 import ThemeToggle from "./ThemeToggle";
 import AddToContactsButton from "./AddToContactsButton";
 
@@ -60,6 +61,7 @@ export default function ProfileCard({ member }: Props) {
           {/* Avatar */}
           <div className="relative h-24 w-24 overflow-hidden rounded-full border-[3px] border-card bg-card">
             {hasImage ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 key={member["profile Image"]}
                 src={member["profile Image"]!}
@@ -176,10 +178,11 @@ export default function ProfileCard({ member }: Props) {
         >
           {member.github && (
             <motion.a
-              href={member.github}
+              href={sanitizeUrl(member.github)}
               target="_blank"
               rel="noopener noreferrer"
               className={socialBtn}
+              aria-label="Visit GitHub profile"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -190,10 +193,11 @@ export default function ProfileCard({ member }: Props) {
           )}
           {member.linkedin && (
             <motion.a
-              href={member.linkedin}
+              href={sanitizeUrl(member.linkedin)}
               target="_blank"
               rel="noopener noreferrer"
               className={socialBtn}
+              aria-label="Visit LinkedIn profile"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -204,10 +208,11 @@ export default function ProfileCard({ member }: Props) {
           )}
           {member.portfolio && (
             <motion.a
-              href={member.portfolio}
+              href={sanitizeUrl(member.portfolio)}
               target="_blank"
               rel="noopener noreferrer"
               className={socialBtn}
+              aria-label="Visit portfolio website"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -220,6 +225,7 @@ export default function ProfileCard({ member }: Props) {
             <motion.a
               href={`mailto:${member.email}`}
               className={socialBtn}
+              aria-label="Send email"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >

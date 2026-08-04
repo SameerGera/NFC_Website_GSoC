@@ -84,7 +84,7 @@ export default function AddToContactsButton({ member }: Props) {
       className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-4 py-3 text-sm font-medium text-white shadow-lg shadow-primary/20 transition-colors hover:bg-primary-light active:shadow-md"
     >
       <svg
-        className="h-4.5 w-4.5"
+        className="h-[18px] w-[18px]"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"

@@ -14,7 +14,7 @@ export default function ThemeToggle() {
       className="fixed top-4 right-4 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-card/80 border border-card-border shadow-lg backdrop-blur-md transition-colors hover:bg-card"
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      aria-label="Toggle theme"
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
       <AnimatePresence mode="wait" initial={false}>
         {isDark ? (

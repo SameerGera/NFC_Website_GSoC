@@ -62,58 +62,41 @@ function DashboardContent() {
   };
 
   useEffect(() => {
-    let mounted = true;
-    (async () => {
-      const snap = await getDocs(collection(db(), "members"));
-      if (!mounted) return;
-      const list = snap.docs.map((d) => {
-        const raw = d.data();
-        const social = raw.social as Record<string, string> | undefined;
-        return {
-          username: d.id,
-          name: raw.name ?? "",
-          email: raw.email ?? "",
-          phone: raw.phone ?? "",
-          clubrole: raw.clubrole ?? "",
-          department: raw.department ?? "",
-          year: raw.year ?? "",
-          bio: raw.bio ?? "",
-          "registration number": raw["registration number"] ?? "",
-          "profile Image": normalizeImageUrl(raw["profile Image"] ?? ""),
-          skills: raw.skills ?? [],
-          projects: raw.projects ?? [],
-          certificates: raw.certificates ?? [],
-          achievements: raw.achievements ?? [],
-          github: raw.github ?? "",
-          linkedin: social?.LinkedIn ?? social?.linkedin ?? raw.linkedin ?? "",
-          portfolio: raw.portfolio ?? "",
-          status: raw.status ?? "Verified",
-        } as Member;
-      });
-      setMembers(list);
-    })();
-    return () => { mounted = false; };
+    loadMembers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSave = async (data: Member) => {
-    const { username, ...rest } = data;
-    await setDoc(doc(db(), "members", username), rest);
-    await loadMembers();
-    showToast(editing ? "Member updated!" : "Member added!");
-    setAdding(false);
-    setEditing(null);
+    try {
+      const { username, ...rest } = data;
+      await setDoc(doc(db(), "members", username), rest);
+      await loadMembers();
+      showToast(editing ? "Member updated!" : "Member added!");
+      setAdding(false);
+      setEditing(null);
+    } catch (err) {
+      showToast(`Error saving: ${err instanceof Error ? err.message : "Unknown error"}`);
+    }
   };
 
   const handleDelete = async (username: string) => {
     if (!confirm("Are you sure you want to delete this member?")) return;
-    await deleteDoc(doc(db(), "members", username));
-    await loadMembers();
-    showToast("Member deleted");
+    try {
+      await deleteDoc(doc(db(), "members", username));
+      await loadMembers();
+      showToast("Member deleted");
+    } catch (err) {
+      showToast(`Error deleting: ${err instanceof Error ? err.message : "Unknown error"}`);
+    }
   };
 
   const handleToggleStatus = async (username: string, status: MemberStatus) => {
-    await updateDoc(doc(db(), "members", username), { status });
-    await loadMembers();
+    try {
+      await updateDoc(doc(db(), "members", username), { status });
+      await loadMembers();
+    } catch (err) {
+      showToast(`Error updating status: ${err instanceof Error ? err.message : "Unknown error"}`);
+    }
   };
 
   const handleLogout = async () => {

@@ -37,7 +37,7 @@ export function BentoItem({ children, className = "" }: { children: React.ReactN
   return (
     <motion.div
       variants={itemVariants}
-      className={`bg-white/80 border border-amber-200/50 shadow-sm dark:bg-slate-900/80 dark:border-slate-800/80 rounded-3xl ${className}`}
+      className={`bg-card border border-card-border shadow-sm rounded-3xl ${className}`}
     >
       {children}
     </motion.div>

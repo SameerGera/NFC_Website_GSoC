@@ -1,4 +1,4 @@
-const CACHE = "gsock-id-v1";
+const CACHE = "gsock-id-v2";
 
 const STATIC_ASSETS = [
   "/",
@@ -16,12 +16,21 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
+  // Skip non-GET requests
+  if (request.method !== "GET") return;
+
+  // API routes: network only, never cache
+  if (url.pathname.startsWith("/api/")) return;
+
+  // Member pages: network-first, fallback to cache
   if (url.pathname.startsWith("/member/")) {
     event.respondWith(
       caches.open(CACHE).then((cache) =>
         fetch(request)
           .then((response) => {
-            cache.put(request, response.clone());
+            if (response.ok) {
+              cache.put(request, response.clone());
+            }
             return response;
           })
           .catch(() => cache.match(request))
@@ -30,6 +39,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Static icons: cache-first
   if (url.pathname.startsWith("/icons/")) {
     event.respondWith(
       caches.match(request).then((cached) => cached || fetch(request))
@@ -37,15 +47,33 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (url.pathname.startsWith("/_next/")) {
-    event.respondWith(fetch(request));
+  // Next.js static assets (_next/static): cache-first for immutable hashed files
+  if (url.pathname.startsWith("/_next/static/")) {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        if (cached) return cached;
+        return fetch(request).then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        });
+      })
+    );
     return;
   }
 
+  // Other _next/ requests (data, etc.): network only
+  if (url.pathname.startsWith("/_next/")) {
+    return;
+  }
+
+  // All other GET requests: network-first with cache fallback
   event.respondWith(
     fetch(request)
       .then((response) => {
-        if (request.method === "GET") {
+        if (response.ok) {
           const clone = response.clone();
           caches.open(CACHE).then((cache) => cache.put(request, clone));
         }

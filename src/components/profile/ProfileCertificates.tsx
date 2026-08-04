@@ -46,7 +46,7 @@ export default function ProfileCertificates({ certificates }: Props) {
             className="group min-w-[160px] max-w-[200px] flex-shrink-0 snap-start rounded-2xl bg-primary-bg/30 border border-card-border p-3 transition-colors duration-200 hover:border-primary/30 dark:bg-slate-800/50 dark:border-slate-700/50 cursor-default"
           >
             <div className={`mb-2 flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold transition-transform duration-200 group-hover:scale-110 ${getOrgStyle(cert.issuingOrganization)}`}>
-              {cert.issuingOrganization.charAt(0)}
+              {(cert.issuingOrganization ?? "").charAt(0) || "?"}
             </div>
             <h3 className="mb-0.5 text-[13px] font-semibold text-text-primary line-clamp-2">{cert.name}</h3>
             <p className="text-[11px] text-text-secondary">{cert.issuingOrganization}</p>

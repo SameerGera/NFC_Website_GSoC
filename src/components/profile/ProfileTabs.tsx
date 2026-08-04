@@ -47,6 +47,7 @@ export default function ProfileTabs({ onTabChange, activeTab }: Props) {
   return (
     <div
       ref={scrollRef}
+      role="tablist"
       className="relative flex overflow-x-auto hide-scrollbar rounded-2xl bg-card border border-card-border p-1"
     >
       <motion.div
@@ -57,6 +58,8 @@ export default function ProfileTabs({ onTabChange, activeTab }: Props) {
       {tabs.map((tab) => (
         <button
           key={tab.id}
+          role="tab"
+          aria-selected={active === tab.id}
           ref={(el) => { if (el) tabRefs.current.set(tab.id, el); }}
           onClick={() => handleTab(tab.id)}
           className={`relative z-10 flex-1 text-center whitespace-nowrap rounded-xl py-2 px-3.5 text-[13px] font-medium transition-colors duration-200 shrink-0 ${
